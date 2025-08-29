@@ -3,11 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>감자팜</title>
+    <title>GMF</title>
     <link rel="stylesheet" href="./assets/css/default.css">
     <link rel="stylesheet" href="./assets/css/style.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700&display=swap" rel="stylesheet">
     <script src="./assets/js/jquery-3.7.1.js" defer></script>
     <script src="./assets/js/script.js" defer></script>
@@ -16,13 +14,15 @@
 
     <header>
         <div class="container vertical-align">
-            <div class="logo"><a href="#">감자팜</a></div>
+            <div class="logo"><a href="#">
+                <img src="./assets/images/logo.png" alt="로고">
+            </a></div>
             <div class="main-nav">
                 <ul class="nav-links">
-                    <li><a><span>최신 밈과 트렌드</span></a></li>
-                    <li><a><span>핵심 전략과 레퍼런스</span></a></li>
-                    <li><a><span>일잘러 스킬셋</span></a></li>
-                    <li><a><span>슴씨피드</span></a></li>
+                    <li><a href="#"><span>최신 밈과 트렌드</span></a></li>
+                    <li><a href="#"><span>핵심 전략과 레퍼런스</span></a></li>
+                    <li><a href="#"><span>일잘러 스킬셋</span></a></li>
+                    <li><a href="#"><span>슴씨피드</span></a></li>
                 </ul>
             </div>
             <div class="side">
@@ -54,10 +54,10 @@
                     </div>
                     <div class="nav-spacer"></div>
                 <div class="nav-content-group">
-                    <p class="no-underline-large">최신 밈과 트렌드</p>
+                    <p class="no-underline-large"><a href="#">최신 밈과 트렌드</a></p>
                 <div class="ref-group has-sub">
                     <div class="ref-group-top">
-                        <p class="no-underline-large">핵심 전략과 레퍼런스</p>
+                        <p class="no-underline-large"><a href="#">핵심 전략과 레퍼런스</a></p>
                         <div class="ref-open-close change">
                             <figure class="ref-open">
                                 <img src="./assets/images/plus.svg" alt="open">
@@ -68,17 +68,36 @@
                         </div>
                     </div>
                     <div class="ref-group-under">
-                        <p class="no-underline">마케팅 플레이북</p>
-                        <p class="no-underline">소셜미디어 운영</p>
-                        <p class="no-underline">콘텐츠 기획</p>
+                        <p class="no-underline"><a href="#">마케팅 플레이북</a></p>
+                        <p class="no-underline"><a href="#">소셜미디어 운영</a></p>
+                        <p class="no-underline"><a href="#">콘텐츠 기획</a></p>
                     </div>
                 </div>
-                <p class="no-underline-large">일잘러 스킬셋</p>
-                <p class="no-underline-large">슴씨피드</p>
+                <p class="no-underline-large"><a href="#">일잘러 스킬셋</a></p>
+                <p class="no-underline-large"><a href="#">슴씨피드</a></p>
                 <hr>
-                <p class="no-underline-middle">고구마팜이 궁금하다면</p>
-                <p class="no-underline-middle">문의하기</p>
-                <p class="no-underline-middle">뉴스레터 구독하기</p>
+                <p class="no-underline-middle"><a href="#">고구마팜이 궁금하다면</a></p>
+                <p class="no-underline-middle"><a href="#">문의하기</a></p>
+                <p class="no-underline-middle"><a href="#">뉴스레터 구독하기</a></p>
+            </div>
+        </div>
+        </div>
+        <div class="search-modal">
+        <div class="search-box">
+            <div class="search-box-group">
+                <div class="search-close">
+                    <img src="./assets/images/close-black.svg" alt="close">
+                </div>
+                <div class="search-group">
+                <div class="search-content">
+                    <figure class="search-icon">
+                        <img src="./assets/images/search.svg" alt="search">
+                    </figure>
+                    <form role="search" method="get" action="/" class="search-form">
+                        <input required type="search" placeholder="검색어를 입력해주세요" id="search-input">
+                    </form>
+                </div>
+                </div>
             </div>
         </div>
         </div>
@@ -104,8 +123,9 @@
         </li>
             </ul>
                 </div>
-                <button class="slider-prev-btn">←</button>
-                <button class="slider-next-btn">→</button>
+                <button class="slider-prev-btn"></button>
+                <button class="slider-next-btn"></button>
+                <div class="slider-pagination"></div>
             </div>
             <div class="layout-container">
                 <div class="wrapper-sticker">
@@ -133,8 +153,8 @@
                     <p>시간이 없다면? 이것부터 읽어봐도 좋아요</p>
                 </div>
                 <div class="slider-controls">
-                    <button class="prev-btn1">←</button>
-                    <button class="next-btn1">→</button>
+                    <button class="prev-btn1"←</button>
+                    <button class="next-btn1"></button>
                 </div>
             </div>
             <div class="article-box">
@@ -146,6 +166,7 @@
             </div>
             </div>
         </div>
+        <div class="article-pagination"></div>
         </section>
 
         <article id="recent">
@@ -171,6 +192,11 @@
             </div>
         </li>
             </ul>
+            <div class="recent-more-btn-box">
+                <div class="recent-more-btn">
+                    <p>더보기</p>
+                </div>
+            </div>
         </article>
 
         <section id="slide">
@@ -182,31 +208,31 @@
                 <button class="prev-btn"><</button>
                 <button class="next-btn">></button>
             </div>
-
+            <div class="slide-pagination"></div>
         </section>
     </main>
 
     <footer>
         <div class="footer-img">
-            <figure class="footer-goguma">
+            <figure class="footer-goguma pc">
                 <img src="./assets/images/footer/footer-goguma.webp" alt="footer-goguma">
             </figure>
-            <figure class="left-goguma">
+            <figure class="left-goguma pc">
                 <img src="./assets/images/footer/left-goguma.webp" alt="left-goguma">
             </figure>
-            <figure class="right-goguma">
+            <figure class="right-goguma pc">
                 <img src="./assets/images/footer/right-goguma.webp" alt="right-goguma">
             </figure>
-            <figure class="goguma-steam">
+            <figure class="goguma-steam pc">
                 <img src="./assets/images/footer/goguma-steam.webp" alt="goguma-steam">
             </figure>
-            <figure class="sticker-news">
+            <figure class="sticker-news pc">
                 <img src="./assets/images/footer/sticker-news.webp" alt="sticker-news">
             </figure>
-            <figure class="sticker-sub">
+            <figure class="sticker-sub pc">
                 <img src="./assets/images/footer/sticker-sub.webp" alt="sticker-sub">
             </figure>
-            <figure class="broken-goguma">
+            <figure class="broken-goguma mo">
                 <a href="">
                     <img src="./assets/images/footer/broken-goguma.webp" alt="broken-goguma">
                 </a>
@@ -219,8 +245,8 @@
                 <p>개인정보 수집 및 이용방침</p>
             </div>
             <div class="footer-text-vertical">
-                <p>서울특별시 강남구 선릉로 123 · 070-1234-5678 · info@gamjafarm.kr</p>
-                <p>©2025. The GJF all rights reserved.</p>
+                <p>서울특별시 강남구 선릉로 123 · 070-1234-5678 · info@ggmfarm.kr</p>
+                <p>©2025. The GMF all rights reserved.</p>
             </div>
         </div>
     </footer>

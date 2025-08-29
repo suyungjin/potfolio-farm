@@ -12,7 +12,7 @@ $(document).ready(function(){
 
 
     $closegroupbox.css({
-        'padding-top': '16px',
+        'padding-top': '20px',
         'padding-right': '20px',
         'padding-bottom': '16px',
         'padding-left': '20px'
@@ -89,316 +89,304 @@ $(document).ready(function(){
     });
 });
 
+//서치 모달
+
+$(".search").on("click", function () {
+    if ($(".search-modal").is(":visible")) {
+      $(".search-modal").fadeOut(150);
+    } else {
+      $(".search-modal").fadeIn(150);
+    }
+    });
+    $(".search-close").on("click", function () {
+    $(".search-modal").fadeOut(150);
+    });
+
 //메인 슬라이더
-
 const sliderData = {
-    animal: {
-        image: './assets/images/1.png',
-        type: '공공기관 • 유튜브 • 콘텐츠',
-        content: '유튜브 필승법 = 귀여운 동물? 공공기관도, AI 크리에이터도 써먹는 콘텐츠 치트'
-    },
-    ai: {
-        image: './assets/images/2.png',
-        type: 'AI • F&B • 관광',
-        content: '오늘의 뉴스 클리핑과 영상/캠페인 트렌드! 한눈에 보고 확인하세요',
-        summary: '챗GPT의 ‘공부 모드’ 출시 소식부터 최신 광고 캠페인 영상까지?'
-    },
-    shortform: {
-        image: './assets/images/3.png',
-        type: '숏폼 • 크리에이터',
-        content: '요즘 숏폼계 강자는 꾸준한 자기 기록! 시리즈 콘텐츠 크리에이터 모음'
-    },
-    sns: {
-        image: './assets/images/4.png',
-        type: 'SNS • 스레드',
-        content: '스레드 유저를 사로잡은 브랜드 계정은? 운영 팁까지 한눈에 보기'
-    },
-    meme: {
-        image: './assets/images/5.png',
-        type: '밈 • 챌린지 • 해외',
-        content: '콜드플레이가 만든 올해 가장 핫한 밈? 브랜드도 뛰어든 해외 밈·챌린지!'
-    },
-    platform: {
-        image: './assets/images/6.png',
-        type: '서비스기획 • 트랜드 • 플랫폼',
-        content: '재고 떨이 아니고 행운 박스입니다만? 요즘 주목받는 절약 소비 트렌드!'
-    }
-};
-
-$(document).ready(function() {
-    const $mainwrapper = $('.main-wrapper');
-    const $slider = $('.main-slider');
-    const $sliderContainer = $('#slider-container');
-    const $sliderTemplate = $('#slider-template');
-    const $wrappersticker = $('.wrapper-sticker');
-
-    $mainwrapper.css('padding-top', '30px');
-    $mainwrapper.css('padding-bottom', '0px');
-    $mainwrapper.css('background-position', 'center bottom -80px');
-    $mainwrapper.css('opacity', '1');
-    $mainwrapper.css('background-color', 'rgb(251,251,251)');
-    $slider.css('max-width', '1138px');
-    $slider.css('opacity', '1');
-    $sliderContainer.css('max-width', '100%');
-    $sliderContainer.css('display', 'flex');
-    $wrappersticker.css('padding-bottom', '160px');
-
-    function setSliderTransform() {
-        if ($(window).width() >= 1124) {
-            $mainwrapper.css('transition', '2s ease-in');
-            $slider.css('transform', 'translateY(5%)');
-            $slider.css('opacity', '1');
-        } else {
-            $mainwrapper.css('transition', 'none');
-            $slider.css('transform', 'translate(0px, 0%)');
-            $slider.css('opacity', '1');
-        }
-    }
-
-    // 초기 로드 시 함수 실행
-    setSliderTransform();
-
-    // 윈도우 리사이즈 시 함수 실행
-    $(window).on('resize', function() {
-        setSliderTransform();
-    });
-
-    for (const key in sliderData) {
-        if (Object.hasOwnProperty.call(sliderData, key)) {
-            const data = sliderData [key];
-
-            // sliderTemplate에서 .slider-item을 복제
-            const $newsliderItem = $sliderTemplate.find('.slider-item').clone();
-            $newsliderItem.attr('data-slider', key);
-
-            // 복제된 요소의 하위 요소들을 찾아 데이터를 설정
-            $newsliderItem.find('.slider-image > img').attr({
-                src: data.image,
-                alt: data.content
-            });
-            $newsliderItem.find('.slider-type').text(data.type);
-            $newsliderItem.find('.slider-content').text(data.content);
-            $newsliderItem.find('.slider-botton-box');
-
-            // sliderContainer의 끝에 추가
-            $sliderContainer.append($newsliderItem);
-        }
-    }
-    
-    // ... (슬라이더 아이템 동적 생성 로직 끝)
-
-   const $prevBtn = $('.slider-prev-btn');
-    const $nextBtn = $('.slider-next-btn');
-
-    // --- 무한 슬라이드 기능 구현 시작 ---
-    const imageCount = $sliderContainer.find('li').length;
-    const cloneCount = 1;
-    const imageMargin = 30;
-    
-    $sliderContainer.find('li').css('margin-right', `${imageMargin}px`);
-
-    $sliderContainer.find('li').slice(0, cloneCount).clone().addClass('clone').appendTo($sliderContainer);
-    $sliderContainer.find('li').slice(-cloneCount).clone().addClass('clone').prependTo($sliderContainer);
-
-    const totalImageCount = $sliderContainer.find('li').length;
-    let currentIndex = cloneCount;
-    let isMoving = false;
-    
-    function setInitialPosition() {
-        const slideItemWidth = $sliderContainer.find('li').first().outerWidth(true);
-        $sliderContainer.css('width', `${totalImageCount * slideItemWidth}px`);
-        $sliderContainer.css('transform', `translateX(${-currentIndex * slideItemWidth}px)`);
-    }
-
-    $(window).on('resize', setInitialPosition);
-    setInitialPosition();
-
-    function updateSlider() {
-        isMoving = true;
-        const slideItemWidth = $sliderContainer.find('li').first().outerWidth(true);
-        const moveDistance = -currentIndex * slideItemWidth;
-        $sliderContainer.css('transition', 'transform 0.5s ease-in-out');
-        $sliderContainer.css('transform', `translateX(${moveDistance}px)`);
-    }
-
-    $sliderContainer.on('transitionend', function() {
-        isMoving = false;
-        
-        // 마지막 클론을 지나쳤을 때, 첫 번째 원본 위치로 즉시 이동
-        if (currentIndex === imageCount + cloneCount) {
-            $sliderContainer.css('transition', 'none');
-            currentIndex = cloneCount;
-            $sliderContainer.css('transform', `translateX(${-currentIndex * $sliderContainer.find('li').first().outerWidth(true)}px)`);
-        } 
-        // 첫 번째 클론을 지나쳤을 때, 마지막 원본 위치로 즉시 이동
-        else if (currentIndex === 0) {
-            $sliderContainer.css('transition', 'none');
-            currentIndex = imageCount;
-            $sliderContainer.css('transform', `translateX(${-currentIndex * $sliderContainer.find('li').first().outerWidth(true)}px)`);
-        }
-    });
-    
-    $nextBtn.on('click', function() {
-        if (!isMoving) {
-            currentIndex++;
-            updateSlider();
-        }
-    });
-
-    $prevBtn.on('click', function() {
-        if (!isMoving) {
-            currentIndex--;
-            updateSlider();
-        }
-    });
-
-    // 드래그 기능과 자동 슬라이드 로직은 기존 코드와 동일
-    let isDragging = false;
-    let startPosition = 0;
-    let currentTranslate = 0;
-
-    $sliderContainer.on('mousedown', function(e) {
-        e.preventDefault();
-        isDragging = true;
-        isMoving = false;
-        startPosition = e.pageX;
-        
-        $sliderContainer.css('transition', 'none');
-        const transformMatrix = $sliderContainer.css('transform').match(/matrix(?:(.*?))?/);
-        if (transformMatrix && transformMatrix[1]) {
-            currentTranslate = parseFloat(transformMatrix[1].split(', ')[4]);
-        }
-    });
-
-    $sliderContainer.on('mousemove', function(e) {
-        if (!isDragging) return;
-        const currentPosition = e.pageX;
-        const dragDistance = currentPosition - startPosition;
-        const newTranslate = currentTranslate + dragDistance;
-        $sliderContainer.css('transform', `translateX(${newTranslate}px)`);
-    });
-
-    $(document).on('mouseup', function(e) {
-        if (!isDragging) return;
-        isDragging = false;
-        
-        const dragDistance = e.pageX - startPosition;
-        const slideItemWidth = $sliderContainer.find('li').first().outerWidth(true);
-
-        if (dragDistance > slideItemWidth / 4) {
-            currentIndex--;
-        } else if (dragDistance < -slideItemWidth / 4) {
-            currentIndex++;
-        }
-        
-        updateSlider();
-    });
-
-    let autoSlideInterval;
-    function startAutoSlide() {
-        autoSlideInterval = setInterval(function() {
-            if (!isMoving) {
-                currentIndex++;
-                updateSlider();
+            animal: {
+                image: './assets/images/1.png',
+                type: '공공기관 • 유튜브 • 콘텐츠',
+                content: '유튜브 필승법 = 귀여운 동물? 공공기관도, AI 크리에이터도 써먹는 콘텐츠 치트'
+            },
+            ai: {
+                image: './assets/images/2.png',
+                type: 'AI • F&B • 관광',
+                content: '오늘의 뉴스 클리핑과 영상/캠페인 트렌드! 한눈에 보고 확인하세요',
+                summary: '챗GPT의 ‘공부 모드’ 출시 소식부터 최신 광고 캠페인 영상까지?'
+            },
+            shortform: {
+                image: './assets/images/3.png',
+                type: '숏폼 • 크리에이터',
+                content: '요즘 숏폼계 강자는 꾸준한 자기 기록! 시리즈 콘텐츠 크리에이터 모음'
+            },
+            sns: {
+                image: './assets/images/4.png',
+                type: 'SNS • 스레드',
+                content: '스레드 유저를 사로잡은 브랜드 계정은? 운영 팁까지 한눈에 보기'
+            },
+            meme: {
+                image: './assets/images/5.png',
+                type: '밈 • 챌린지 • 해외',
+                content: '콜드플레이가 만든 올해 가장 핫한 밈? 브랜드도 뛰어든 해외 밈·챌린지!'
+            },
+            platform: {
+                image: './assets/images/6.png',
+                type: '서비스기획 • 트랜드 • 플랫폼',
+                content: '재고 떨이 아니고 행운 박스입니다만? 요즘 주목받는 절약 소비 트렌드!'
             }
-        }, 3000);
-    }
+        };
 
-    $sliderContainer.on('mouseenter', function() {
-        clearInterval(autoSlideInterval);
-    }).on('mouseleave', function() {
-        startAutoSlide();
-    });
+        $(document).ready(function() {
+            const $mainwrapper = $('.main-wrapper');
+            const $slider = $('.main-slider');
+            const $sliderContainer = $('#slider-container');
+            const $sliderTemplate = $('#slider-template');
+            const $wrappersticker = $('.wrapper-sticker');
+            const $prevBtn = $('.slider-prev-btn');
+            const $nextBtn = $('.slider-next-btn');
+            const $pagination = $('.slider-pagination');
+            const $sticker1 = $('.wrapper-sticker1');
+            const $sticker2 = $('.wrapper-sticker2');
+            const $sticker3 = $('.wrapper-sticker3');
+            const $sticker4 = $('.wrapper-sticker4');
 
-    startAutoSlide();
-    
-    //모바일 슬라이더 구현
- // 데스크톱 슬라이더 로직
+            $mainwrapper.css('padding-top', '30px');
+            $mainwrapper.css('padding-bottom', '0px');
+            $mainwrapper.css('background-position', 'center bottom -80px');
+            $mainwrapper.css('opacity', '1');
+            $mainwrapper.css('background-color', 'rgb(251,251,251)');
+            $slider.css('max-width', '1138px');
+            $slider.css('opacity', '1');
+            $sliderContainer.css('max-width', '100%');
+            $sliderContainer.css('display', 'flex');
+            $wrappersticker.css('padding-bottom', '180px');
+            $pagination.css('display', 'none');
 
-    // Swiper 인스턴스 변수
-    let mySwiper = null;
+            function setSliderTransform() {
+                if ($(window).width() >= 1124) {
+                    $mainwrapper.css('transition', '2s ease-in');
+                    $slider.css('transform', 'translateY(5%)');
+                    $slider.css('opacity', '1');
+                } else {
+                    $mainwrapper.css('transition', 'none');
+                    $slider.css('transform', 'translate(0px, 0%)');
+                    $slider.css('opacity', '1');
+                }
+            }
 
-    function initDesktopSlider() {
-        if (mySwiper) {
-            // Swiper가 이미 실행 중이라면 제거
-            mySwiper.destroy(true, true);
-            mySwiper = null;
-        }
+            setTimeout(function() {
+            $sticker1.css('opacity', '1');
+            $sticker1.css('transition', '1s ease-in');
+            }, 3000);
 
-        if (!desktopSliderEnabled) {
-            // 데스크톱용 CSS 및 구조 복원
-            $sliderContainer.css('display', 'flex').css('flex-direction', 'row');
-            $prevBtn.show();
-            $nextBtn.show();
+            setTimeout(function() {
+            $sticker2.css('opacity', '1');
+            $sticker2.css('transition', '1s ease-in');
+            }, 3500);
+
+            setTimeout(function() {
+            $sticker3.css('opacity', '1');
+            $sticker3.css('transition', '1s ease-in');
+            }, 4000);
+
+            setTimeout(function() {
+            $sticker4.css('opacity', '1');
+            $sticker4.css('transition', '1s ease-in');
+            }, 5000);
             
-            // 여기에 기존 데스크톱 슬라이더 로직 (무한 루프, 수평 이동 등)을 다시 삽입하세요.
-            // 예시:
-            function updateDesktopSlider() {
-                const slideItemWidth = $sliderContainer.find('.slider-item').first().outerWidth(true);
+            let isScaledUp = false;
+
+            setInterval(() => {
+
+                $sticker4.css('transition', '1s ease-in');
+                if (isScaledUp) {
+                $sticker4.css('transform', 'scale(1.0)');
+                } else {
+                $sticker4.css('transform', 'scale(1.1)');
+                }
+                isScaledUp = !isScaledUp;
+            }, 1000);
+
+            setSliderTransform();
+            $(window).on('resize', function() {
+                setSliderTransform();
+            });
+
+            for (const key in sliderData) {
+                if (Object.hasOwnProperty.call(sliderData, key)) {
+                    const data = sliderData [key];
+                    const $newsliderItem = $sliderTemplate.find('.slider-item').clone();
+                    $newsliderItem.attr('data-slider', key);
+                    $newsliderItem.find('.slider-image > img').attr({
+                        src: data.image,
+                        alt: data.content
+                    });
+                    $newsliderItem.find('.slider-type').text(data.type);
+                    $newsliderItem.find('.slider-content').text(data.content);
+                    $newsliderItem.find('.slider-botton-box');
+                    $sliderContainer.append($newsliderItem);
+                }
+            }
+
+            const imageCount = $sliderContainer.find('li').length;
+            const cloneCount = 1;
+            const imageMargin = 30;
+
+            $sliderContainer.find('li').css('margin-right', `${imageMargin}px`);
+
+            $sliderContainer.find('li').slice(0, cloneCount).clone().addClass('clone').appendTo($sliderContainer);
+            $sliderContainer.find('li').slice(-cloneCount).clone().addClass('clone').prependTo($sliderContainer);
+
+            const totalImageCount = $sliderContainer.find('li').length;
+            let currentIndex = cloneCount;
+            let isMoving = false;
+            let isDragging = false;
+            let startPosition = 0;
+            let currentTranslate = 0;
+            let autoSlideInterval;
+
+            // --- 함수 정의 ---
+            function setInitialPosition() {
+                const slideItemWidth = $sliderContainer.find('li').first().outerWidth(true);
+                $sliderContainer.css('width', `${totalImageCount * slideItemWidth}px`);
+                $sliderContainer.css('transform', `translateX(${-currentIndex * slideItemWidth}px)`);
+            }
+
+            function updateSlider() {
+                isMoving = true;
+                const slideItemWidth = $sliderContainer.find('li').first().outerWidth(true);
                 const moveDistance = -currentIndex * slideItemWidth;
                 $sliderContainer.css('transition', 'transform 0.5s ease-in-out');
                 $sliderContainer.css('transform', `translateX(${moveDistance}px)`);
+                updatePagination();
             }
 
-            $nextBtn.off().on('click', function() {
-                currentIndex++;
-                updateDesktopSlider();
-            });
-            $prevBtn.off().on('click', function() {
-                currentIndex--;
-                updateDesktopSlider();
-            });
+            function createPagination() {
+                $pagination.empty();
+                const paginationCount = 3;
+                for (let i = 0; i < paginationCount; i++) {
+                    const $bullet = $('<div class="slider-pagination-bullet"></div>');
+                    $bullet.attr('data-index', i);
+                    $pagination.append($bullet);
+                }
+                updatePagination();
+            }
+
+            function updatePagination() {
+                const activeIndex = (currentIndex - cloneCount + imageCount) % imageCount;
+                $pagination.find('.slider-pagination-bullet').removeClass('active');
+                $pagination.find(`.slider-pagination-bullet[data-index="${activeIndex % 3}"]`).addClass('active');
+            }
+
+            function startAutoSlide() {
+                if (autoSlideInterval) return;
+                autoSlideInterval = setInterval(function() {
+                    if (!isMoving) {
+                        currentIndex++;
+                        updateSlider();
+                    }
+                }, 3000);
+            }
+
+            function stopAutoSlide() {
+                clearInterval(autoSlideInterval);
+                autoSlideInterval = null;
+            }
+
+            // --- 마우스/터치 이벤트 핸들러 통합 ---
+            const handleStart = (e) => {
+                e.preventDefault();
+                isDragging = true;
+                isMoving = false;
+                startPosition = e.type.includes('mouse') ? e.pageX : e.originalEvent.touches[0].pageX;
+                stopAutoSlide();
+                $sliderContainer.css('transition', 'none');
+                const transformMatrix = $sliderContainer.css('transform').match(/matrix(?:(.*?))?/);
+                if (transformMatrix && transformMatrix[1]) {
+                    currentTranslate = parseFloat(transformMatrix[1].split(', ')[3]);
+                }
+            };
+
+            const handleMove = (e) => {
+                if (!isDragging) return;
+                const currentPosition = e.type.includes('mouse') ? e.pageX : e.originalEvent.touches[0].pageX;
+                const dragDistance = currentPosition - startPosition;
+                const newTranslate = currentTranslate + dragDistance;
+                $sliderContainer.css('transform', `translateX(${newTranslate}px)`);
+            };
+
+            const handleEnd = (e) => {
+                if (!isDragging) return;
+            isDragging = false;
             
-            desktopSliderEnabled = true;
-        }
-    }
-    
-    function initMobileSwiper() {
-        if (desktopSliderEnabled) {
-            // 데스크톱 슬라이더 로직 정리
-            desktopSliderEnabled = false;
-            $nextBtn.off();
-            $prevBtn.off();
-        }
+            // 터치/마우스 드래그 종료 시점의 위치 계산
+            const endPosition = e.type.includes('mouse') ? e.pageX : e.originalEvent.changedTouches[0].pageX;
+            const dragDistance = endPosition - startPosition;
+            const slideItemWidth = $sliderContainer.find('li').first().outerWidth(true);
+            const movedSlides = Math.round(dragDistance / slideItemWidth);
+            currentIndex -= movedSlides;
+            updateSlider();
+            startAutoSlide();
+            };
 
-        if (!mySwiper) {
-            // Swiper가 필요한 클래스 추가
-            $mainSlider.addClass('swiper');
-            $sliderContainer.addClass('swiper-wrapper');
-            $sliderContainer.find('.slider-item').addClass('swiper-slide');
+            // --- 이벤트 리스너 통합 ---
+            $(window).on('resize', setInitialPosition);
 
-            // Swiper 플러그인 초기화
-            mySwiper = new Swiper('.swiper', {
-                direction: 'vertical',
-                slidesPerView: 1,
-                spaceBetween: 0,
-                loop: false,
-                navigation: {
-                    nextEl: '.slider-next-btn',
-                    prevEl: '.slider-prev-btn',
-                },
+            $sliderContainer.on('transitionend', function() {
+                isMoving = false;
+                if (currentIndex === imageCount + cloneCount) {
+                    $sliderContainer.css('transition', 'none');
+                    currentIndex = cloneCount;
+                    $sliderContainer.css('transform', `translateX(${-currentIndex * $sliderContainer.find('li').first().outerWidth(true)}px)`);
+                } else if (currentIndex === 0) {
+                    $sliderContainer.css('transition', 'none');
+                    currentIndex = imageCount;
+                    $sliderContainer.css('transform', `translateX(${-currentIndex * $sliderContainer.find('li').first().outerWidth(true)}px)`);
+                }
             });
-        }
-    }
 
-    // 화면 크기를 확인하고 올바른 슬라이더를 초기화하는 메인 함수
-    function checkSliderInit() {
-        if ($(window).width() <= 768) {
-            initMobileSwiper();
-        } else {
-            initDesktopSlider();
-        }
-    }
+            $nextBtn.on('click', function() {
+                if (!isMoving) {
+                    currentIndex++;
+                    updateSlider();
+                }
+            });
 
-    // 초기 로드 시 실행
-    checkSliderInit();
+            $prevBtn.on('click', function() {
+                if (!isMoving) {
+                    currentIndex--;
+                    updateSlider();
+                }
+            });
 
-    // 윈도우 리사이즈 시 실행
-    $(window).on('resize', function() {
-        checkSliderInit();
-    });
+            $sliderContainer.on('mouseenter', stopAutoSlide).on('mouseleave', startAutoSlide);
 
-});
+            // 마우스 이벤트 연결
+            $sliderContainer.on('mousedown', handleStart);
+            $sliderContainer.on('mousemove', handleMove);
+            $(document).on('mouseup', handleEnd);
+            
+            // 터치 이벤트 연결
+            $sliderContainer.on('touchstart', handleStart);
+            $sliderContainer.on('touchmove', handleMove);
+            $(document).on('touchend', handleEnd);
+
+
+            $pagination.on('click', '.slider-pagination-bullet', function() {
+                if (isMoving) return;
+                stopAutoSlide();
+                const targetIndex = parseInt($(this).attr('data-index'), 10);
+                currentIndex = targetIndex + cloneCount;
+                updateSlider();
+                startAutoSlide();
+            });
+
+            // --- 초기 실행 ---
+            setInitialPosition();
+            createPagination();
+            startAutoSlide();
+        });
 
 //인기 아티클
 
@@ -419,8 +407,8 @@ $(document).ready(function() {
     const $articleWrapper = $('.article-wrapper');
     const $prevBtn = $('.prev-btn1');
     const $nextBtn = $('.next-btn1');
-    // 이 부분을 .article-wrapper로 수정
-    const $sliderContainer = $('.article-wrapper');
+    const $sliderContainer = $('.article-container');
+    const $pagination = $('.article-pagination');
 
     let currentPage = 1;
     const totalPages = 2;
@@ -447,47 +435,114 @@ $(document).ready(function() {
         }
     });
 
-    $articleList2.clone().prependTo($articleWrapper);
-    $articleList1.clone().appendTo($articleWrapper);
+    $articleList2.clone().prependTo($articleWrapper).addClass('cloned-list-pre');
+    $articleList1.clone().appendTo($articleWrapper).addClass('cloned-list-post');
 
-    $articleWrapper.css('transform', `translateX(-${currentPage * 100}%)`);
+    const $allArticleLists = $articleWrapper.find('.article-list');
 
+    // 페이지네이션 및 드래그 기능 추가
+    const createPagination = () => {
+        $pagination.empty();
+        for (let i = 0; i < totalPages; i++) {
+            $('<div class="pagination-bullet"></div>').attr('data-index', i + 1).appendTo($pagination);
+        }
+    };
+
+    const updatePagination = () => {
+        const activeIndex = currentPage > totalPages ? 1 : currentPage < 1 ? totalPages : currentPage;
+        $pagination.find('.pagination-bullet').removeClass('active');
+        $pagination.find(`[data-index="${activeIndex}"]`).addClass('active');
+    };
+
+    let isDragging = false;
+    let startPosition = 0;
+    let currentTranslate = 0;
+    let slideWidth = $articleWrapper.find('.article-list').first().outerWidth(true);
+
+    const handleStart = (e) => {
+        isDragging = true;
+        const event = e.originalEvent || e;
+        startPosition = event.touches ? event.touches[0].pageX : event.pageX;
+        $articleWrapper.css('transition', 'none');
+        const transformMatrix = $articleWrapper.css('transform').match(/matrix(?:(.*?))?/);
+        if (transformMatrix && transformMatrix[1]) {
+            currentTranslate = parseFloat(transformMatrix[1].split(', ')[4]);
+        }
+    };
+
+    const handleMove = (e) => {
+        if (!isDragging) return;
+        const event = e.originalEvent || e;
+        const currentPosition = event.touches ? event.touches[0].pageX : event.pageX;
+        const dragDistance = currentPosition - startPosition;
+        $articleWrapper.css('transform', `translateX(${currentTranslate + dragDistance}px)`);
+    };
+
+    const handleEnd = (e) => {
+        if (!isDragging) return;
+        isDragging = false;
+        const event = e.originalEvent || e;
+        const endPosition = event.changedTouches ? event.changedTouches[0].pageX : event.pageX;
+        const dragDistance = endPosition - startPosition;
+
+        if (Math.abs(dragDistance) > slideWidth / 4) {
+            if (dragDistance > 0) {
+                $prevBtn.trigger('click');
+            } else {
+                $nextBtn.trigger('click');
+            }
+        } else {
+            updateSlider();
+        }
+    };
+
+    // 이벤트 리스너 연결
+    $articleWrapper.on('mousedown touchstart', handleStart);
+    $articleWrapper.on('mousemove touchmove', handleMove);
+    $(document).on('mouseup touchend', handleEnd);
+
+    // 슬라이더 이동 함수
     function updateSlider() {
+        $articleWrapper.css('transition', 'transform 0.5s ease-in-out');
         $articleWrapper.css('transform', `translateX(-${currentPage * 100}%)`);
+        updatePagination();
     }
 
+    // 버튼 클릭 이벤트
     $nextBtn.on('click', function() {
         if (currentPage < totalPages + 1) {
             currentPage++;
-            $articleWrapper.css('transition', 'transform 0.5s ease-in-out');
             updateSlider();
-        }
-
-        if (currentPage === totalPages + 1) {
-            setTimeout(() => {
-                $articleWrapper.css('transition', 'none');
-                currentPage = 1;
-                $articleWrapper.css('transform', `translateX(-${currentPage * 100}%)`);
-            }, 500);
         }
     });
 
     $prevBtn.on('click', function() {
         if (currentPage > 0) {
             currentPage--;
-            $articleWrapper.css('transition', 'transform 0.5s ease-in-out');
             updateSlider();
-        }
-
-        if (currentPage === 0) {
-            setTimeout(() => {
-                $articleWrapper.css('transition', 'none');
-                currentPage = totalPages;
-                $articleWrapper.css('transform', `translateX(-${currentPage * 100}%)`);
-            }, 500);
         }
     });
 
+    // 페이지네이션 클릭 이벤트
+    $pagination.on('click', '.pagination-bullet', function() {
+        currentPage = parseInt($(this).attr('data-index'));
+        updateSlider();
+    });
+
+    // 무한 루프 처리
+    $articleWrapper.on('transitionend', function() {
+        if (currentPage === totalPages + 1) {
+            $articleWrapper.css('transition', 'none');
+            currentPage = 1;
+            $articleWrapper.css('transform', `translateX(-${currentPage * 100}%)`);
+        } else if (currentPage === 0) {
+            $articleWrapper.css('transition', 'none');
+            currentPage = totalPages;
+            $articleWrapper.css('transform', `translateX(-${currentPage * 100}%)`);
+        }
+    });
+
+    // 자동 슬라이드
     let autoSlideInterval;
     function startAutoSlide() {
         autoSlideInterval = setInterval(function() {
@@ -502,6 +557,10 @@ $(document).ready(function() {
         startAutoSlide();
     });
 
+    // 초기화
+    $articleWrapper.css('transform', `translateX(-${currentPage * 100}%)`);
+    createPagination();
+    updatePagination();
     startAutoSlide();
 });
 
@@ -584,68 +643,95 @@ $(document).ready(function() {
     const $sliderContainer = $('.slider-container');
     const $prevBtn = $('.prev-btn');
     const $nextBtn = $('.next-btn');
+    const $pagination = $('.slide-pagination');
 
     $slide.css('margin-top', '100px');
     $slide.css('margin-bottom', '100px');
 
-    // 추가할 이미지 목록
-    const images = [
-        './assets/images/cliping/0807-700x400.png',
-        './assets/images/cliping/0806-700x400.png',
-        './assets/images/cliping/0805-700x400.png',
-        './assets/images/cliping/0804-700x400.png',
-        './assets/images/cliping/0801-700x400.png'
-    ];
+    const sliderData = {
+        1: {
+            image: './assets/images/cliping/0807-700x400.png'
+        },
+        2: {
+            image: './assets/images/cliping/0806-700x400.png'
+        },
+        3: {
+            image: './assets/images/cliping/0805-700x400.png'
+        },
+        4: {
+            image: './assets/images/cliping/0804-700x400.png'
+        },
+        5: {
+            image: './assets/images/cliping/0801-700x400.png'
+        }
+    };
 
-    // ul과 li 구조 추가
-    images.forEach(function(imageUrl, index) {
-        $imageList.append(`<li><img src="${imageUrl}" alt="이미지 ${index + 1}"></li>`);
+    // 이미지 데이터만 사용하여 슬라이드 목록을 생성합니다.
+    $.each(sliderData, function(key, data) {
+        $imageList.append(`<li><img src="${data.image}" alt=""></li>`);
     });
 
     const $listItems = $imageList.find('li');
     const imageCount = $listItems.length;
-    const itemsToShow = 3;
-    const imageMargin = 30;
+    let itemsToShow = 3;
+    const imageMargin = 15;
 
-    // 슬라이더 항목에 여백 적용
     $listItems.css('margin-right', `${imageMargin}px`);
+    $listItems.css('margin-left', `${imageMargin}px`);
 
-    // 무한 슬라이더를 위한 이미지 복제
     $listItems.slice(0, itemsToShow).clone().appendTo($imageList);
     $listItems.slice(-itemsToShow).clone().prependTo($imageList);
 
     const $allListItems = $imageList.find('li');
     const totalImageCount = $allListItems.length;
-    let currentIndex = itemsToShow; 
-    const slideWidth = $listItems.first().outerWidth(true); // 마진을 포함한 너비
+    let currentIndex = itemsToShow;
+    let slideWidth;
 
-    // ul의 너비를 전체 li의 너비에 맞게 설정
-    $imageList.css('width', `${totalImageCount * slideWidth}px`);
-    $imageList.css('transform', `translateX(${-currentIndex * slideWidth}px)`);
+    function initializeSlider() {
+        if ($(window).width() <= 768) {
+            itemsToShow = 1;
+            const newLiWidth = $sliderContainer.width();
+            $allListItems.css('width', `${newLiWidth}px`);
+        } else {
+            itemsToShow = 3;
+            const itemWidth = ($sliderContainer.width() - (imageMargin * 2 * itemsToShow)) / itemsToShow;
+            $allListItems.css('width', `${itemWidth}px`);
+        }
+        
+        slideWidth = $allListItems.first().outerWidth(true);
+        $imageList.css('width', `${totalImageCount * slideWidth}px`);
+        $imageList.css('transform', `translateX(${-currentIndex * slideWidth}px)`);
+        updatePagination();
+    }
 
-    // 슬라이더 이동 함수
     function updateSlider() {
         const moveDistance = -currentIndex * slideWidth;
         $imageList.css('transition', 'transform 0.5s ease');
         $imageList.css('transform', `translateX(${moveDistance}px)`);
-        
-        // 무한 슬라이더
-        if (currentIndex === totalImageCount - itemsToShow) {
-            setTimeout(() => {
-                $imageList.css('transition', 'none');
-                currentIndex = itemsToShow;
-                $imageList.css('transform', `translateX(${-currentIndex * slideWidth}px)`);
-            }, 500);
-        } else if (currentIndex === 0) {
-            setTimeout(() => {
-                $imageList.css('transition', 'none');
-                currentIndex = imageCount;
-                $imageList.css('transform', `translateX(${-currentIndex * slideWidth}px)`);
-            }, 500);
+        updatePagination();
+    }
+
+    function createPagination() {
+        $pagination.empty();
+        for (let i = 0; i < imageCount; i++) {
+            const $bullet = $('<div class="pagination-bullet"></div>');
+            $bullet.attr('data-index', i);
+            $pagination.append($bullet);
         }
     }
 
-    // 다음 버튼 클릭
+    function updatePagination() {
+        let activeIndex = currentIndex - itemsToShow;
+        if (activeIndex < 0) {
+            activeIndex = imageCount - 1;
+        } else if (activeIndex >= imageCount) {
+            activeIndex = 0;
+        }
+
+        $pagination.find('.pagination-bullet').removeClass('active');
+        $pagination.find(`.pagination-bullet[data-index="${activeIndex}"]`).addClass('active');
+    }
+
     $nextBtn.on('click', function() {
         if (currentIndex < imageCount + itemsToShow) {
             currentIndex++;
@@ -653,7 +739,6 @@ $(document).ready(function() {
         }
     });
 
-    // 이전 버튼 클릭
     $prevBtn.on('click', function() {
         if (currentIndex > 0) {
             currentIndex--;
@@ -661,48 +746,57 @@ $(document).ready(function() {
         }
     });
 
-    // 마우스 드래그 기능
+    $pagination.on('click', '.pagination-bullet', function() {
+        const targetIndex = parseInt($(this).attr('data-index'), 10);
+        currentIndex = targetIndex + itemsToShow;
+        updateSlider();
+    });
+
+    // --- 통합된 이벤트 핸들러 ---
     let isDragging = false;
     let startPosition = 0;
     let currentTranslate = 0;
 
-    $imageList.on('mousedown', function(e) {
+    const handleStart = (e) => {
         e.preventDefault();
         isDragging = true;
-        startPosition = e.pageX;
-        
+        const event = e.originalEvent || e;
+        startPosition = event.touches ? event.touches[0].pageX : event.pageX;
         $imageList.css('transition', 'none');
         const transformMatrix = $imageList.css('transform').match(/matrix(?:(.*?))?/);
         if (transformMatrix && transformMatrix[1]) {
             currentTranslate = parseFloat(transformMatrix[1].split(', ')[4]);
         }
-    });
+    };
 
-    $imageList.on('mousemove', function(e) {
+    const handleMove = (e) => {
         if (!isDragging) return;
-        const currentPosition = e.pageX;
+        const event = e.originalEvent || e;
+        const currentPosition = event.touches ? event.touches[0].pageX : event.pageX;
         const dragDistance = currentPosition - startPosition;
         const newTranslate = currentTranslate + dragDistance;
         $imageList.css('transform', `translateX(${newTranslate}px)`);
-    });
+    };
 
-    $(document).on('mouseup', function(e) {
+    const handleEnd = (e) => {
         if (!isDragging) return;
         isDragging = false;
-
-        const currentPosition = e.pageX;
-        const dragDistance = currentPosition - startPosition;
+        const event = e.originalEvent || e;
+        const endPosition = event.changedTouches ? event.changedTouches[0].pageX : event.pageX;
+        const dragDistance = endPosition - startPosition;
 
         if (dragDistance > slideWidth / 4) {
             currentIndex--;
         } else if (dragDistance < -slideWidth / 4) {
             currentIndex++;
         }
-        
         updateSlider();
-    });
+    };
 
-    // 자동 슬라이딩 기능
+    $imageList.on('mousedown touchstart', handleStart);
+    $imageList.on('mousemove touchmove', handleMove);
+    $(document).on('mouseup touchend', handleEnd);
+
     let autoSlideInterval;
     function startAutoSlide() {
         autoSlideInterval = setInterval(function() {
@@ -710,14 +804,30 @@ $(document).ready(function() {
         }, 3000);
     }
     
-    // 마우스 오버 시 자동 슬라이딩 중지, 마우스 아웃 시 다시 시작
     $sliderContainer.on('mouseenter', function() {
         clearInterval(autoSlideInterval);
     }).on('mouseleave', function() {
         startAutoSlide();
     });
 
-    // 페이지 로드 시 자동 슬라이딩 시작
+    $imageList.on('transitionend', function() {
+        if (currentIndex === totalImageCount - itemsToShow) {
+            $imageList.css('transition', 'none');
+            currentIndex = itemsToShow;
+            $imageList.css('transform', `translateX(${-currentIndex * slideWidth}px)`);
+        } else if (currentIndex === 0) {
+            $imageList.css('transition', 'none');
+            currentIndex = imageCount;
+            $imageList.css('transform', `translateX(${-currentIndex * slideWidth}px)`);
+        }
+    });
+
+    $(window).on('resize', function() {
+        initializeSlider();
+    });
+
+    createPagination();
+    initializeSlider();
     startAutoSlide();
 });
 
