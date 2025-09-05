@@ -789,6 +789,7 @@ $(document).ready(function() {
         const endPosition = event.changedTouches ? event.changedTouches[0].pageX : event.pageX;
         const dragDistance = endPosition - startPosition;
 
+        const dragDirection = Math.sign(dragDistance); 
         const slideChange = Math.round(Math.abs(dragDistance) / slideWidth);
 
         if (slideChange > 0) {
