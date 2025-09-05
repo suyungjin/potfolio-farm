@@ -698,6 +698,7 @@ header .container {
     overflow: hidden;
     border-radius: 3% 3% 0 0;
     text-align: center;
+    cursor: pointer;
 }
 
 .image-list li img:hover{

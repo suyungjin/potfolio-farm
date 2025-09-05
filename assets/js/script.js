@@ -666,7 +666,6 @@ $(document).ready(function() {
         }
     };
 
-    // 이미지 데이터만 사용하여 슬라이드 목록을 생성합니다.
     $.each(sliderData, function(key, data) {
         $imageList.append(`<li><img src="${data.image}" alt=""></li>`);
     });
@@ -752,12 +751,15 @@ $(document).ready(function() {
         updateSlider();
     });
 
-    // --- 통합된 이벤트 핸들러 ---
     let isDragging = false;
     let startPosition = 0;
     let currentTranslate = 0;
+    
+    let isTransitioning = false; 
 
     const handleStart = (e) => {
+        if (isTransitioning) return;
+        
         e.preventDefault();
         isDragging = true;
         const event = e.originalEvent || e;
@@ -781,15 +783,18 @@ $(document).ready(function() {
     const handleEnd = (e) => {
         if (!isDragging) return;
         isDragging = false;
+        isTransitioning = true; 
+        
         const event = e.originalEvent || e;
         const endPosition = event.changedTouches ? event.changedTouches[0].pageX : event.pageX;
         const dragDistance = endPosition - startPosition;
 
-        if (dragDistance > slideWidth / 4) {
-            currentIndex--;
-        } else if (dragDistance < -slideWidth / 4) {
-            currentIndex++;
+        const slideChange = Math.round(Math.abs(dragDistance) / slideWidth);
+
+        if (slideChange > 0) {
+            currentIndex -= slideChange * dragDirection;
         }
+
         updateSlider();
     };
 
@@ -811,11 +816,14 @@ $(document).ready(function() {
     });
 
     $imageList.on('transitionend', function() {
-        if (currentIndex === totalImageCount - itemsToShow) {
+        isTransitioning = false;
+        
+        if (currentIndex >= imageCount + itemsToShow) {
             $imageList.css('transition', 'none');
             currentIndex = itemsToShow;
             $imageList.css('transform', `translateX(${-currentIndex * slideWidth}px)`);
-        } else if (currentIndex === 0) {
+        } 
+        else if (currentIndex <= 0) {
             $imageList.css('transition', 'none');
             currentIndex = imageCount;
             $imageList.css('transform', `translateX(${-currentIndex * slideWidth}px)`);
