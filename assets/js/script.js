@@ -317,18 +317,21 @@ const sliderData = {
             };
 
             const handleEnd = (e) => {
-                if (!isDragging) return;
+             if (!isDragging) return;
             isDragging = false;
-            
-            // 터치/마우스 드래그 종료 시점의 위치 계산
+
             const endPosition = e.type.includes('mouse') ? e.pageX : e.originalEvent.changedTouches[0].pageX;
-            const dragDistance = endPosition - startPosition;
-            const slideItemWidth = $sliderContainer.find('li').first().outerWidth(true);
-            const movedSlides = Math.round(dragDistance / slideItemWidth);
-            currentIndex -= movedSlides;
-            updateSlider();
-            startAutoSlide();
-            };
+             const dragDistance = endPosition - startPosition;
+             const slideItemWidth = $sliderContainer.find('li').first().outerWidth(true);
+             const movedSlides = Math.round(dragDistance / slideItemWidth);
+
+             if (Math.abs(dragDistance) > 50) { 
+             currentIndex -= movedSlides;
+             } else {
+             }
+             updateSlider();
+             startAutoSlide();
+             };
 
             // --- 이벤트 리스너 통합 ---
             $(window).on('resize', setInitialPosition);
