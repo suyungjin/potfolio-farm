@@ -296,48 +296,47 @@ const sliderData = {
 
             // --- 마우스/터치 이벤트 핸들러 통합 ---
             const handleStart = (e) => {
-            e.preventDefault();
-            isDragging = true;
-            isMoving = false;
-            startPosition = e.type.includes('mouse') ? e.pageX : e.originalEvent.touches[0].pageX;
-            stopAutoSlide();
-            $sliderContainer.css('transition', 'none');
+                isDragging = true;
+                isMoving = false;
+                startPosition = e.type.includes('mouse') ? e.pageX : e.originalEvent.touches[0].pageX;
+                stopAutoSlide();
+                $sliderContainer.css('transition', 'none');
 
-            const transformMatrix = $sliderContainer.css('transform').match(/matrix\((.+)\)/);
-            if (transformMatrix && transformMatrix[1]) {
-                currentTranslate = parseFloat(transformMatrix[1].split(', ')[4]); 
-            } else {
-                currentTranslate = 0;
-            }
-        };
+                const transformMatrix = $sliderContainer.css('transform').match(/matrix\((.+)\)/);
+                if (transformMatrix && transformMatrix[1]) {
+                    currentTranslate = parseFloat(transformMatrix[1].split(', ')[4]);
+                } else {
+                    currentTranslate = 0; // transform 속성이 없을 때 0으로 초기화
+                }
+            };
 
-        const handleMove = (e) => {
-            if (!isDragging) return;
-            e.preventDefault(); // 
-            const currentPosition = e.type.includes('mouse') ? e.pageX : e.originalEvent.touches[0].pageX;
-            const dragDistance = currentPosition - startPosition;
-            const newTranslate = currentTranslate + dragDistance;
-            $sliderContainer.css('transform', `translateX(${newTranslate}px)`);
-        };
+            const handleMove = (e) => {
+                if (!isDragging) return;
+                e.preventDefault(); // 드래그 중 스크롤 방지
+                const currentPosition = e.type.includes('mouse') ? e.pageX : e.originalEvent.touches[0].pageX;
+                const dragDistance = currentPosition - startPosition;
+                const newTranslate = currentTranslate + dragDistance;
+                $sliderContainer.css('transform', `translateX(${newTranslate}px)`);
+            };
 
-        const handleEnd = (e) => {
-        if (!isDragging) return;
-        isDragging = false;
-        
-        const endPosition = e.type.includes('mouseup') ? e.pageX : e.originalEvent.changedTouches[0].pageX;
-        const dragDistance = endPosition - startPosition;
-        
-        if (Math.abs(dragDistance) > 50) { 
-            if (dragDistance < 0) {
-                currentIndex++;
-            } else {
-                currentIndex--;
-            }
-        }
-        
-        updateSlider();
-        startAutoSlide();
-        };
+            const handleEnd = (e) => {
+                if (!isDragging) return;
+                isDragging = false;
+
+                const endPosition = e.type.includes('mouseup') ? e.pageX : e.originalEvent.changedTouches[0].pageX;
+                const dragDistance = endPosition - startPosition;
+
+                if (Math.abs(dragDistance) > 50) {
+                    if (dragDistance < 0) {
+                        currentIndex++;
+                    } else {
+                        currentIndex--;
+                    }
+                }
+
+                updateSlider();
+                startAutoSlide();
+            };
 
         $(window).on('resize', setInitialPosition);
 
