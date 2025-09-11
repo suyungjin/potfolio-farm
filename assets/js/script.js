@@ -296,100 +296,104 @@ const sliderData = {
 
             // --- 마우스/터치 이벤트 핸들러 통합 ---
             const handleStart = (e) => {
-                e.preventDefault();
-                isDragging = true;
-                isMoving = false;
-                startPosition = e.type.includes('mouse') ? e.pageX : e.originalEvent.touches[0].pageX;
-                stopAutoSlide();
-                $sliderContainer.css('transition', 'none');
-                const transformMatrix = $sliderContainer.css('transform').match(/matrix(?:(.*?))?/);
-                if (transformMatrix && transformMatrix[1]) {
-                    currentTranslate = parseFloat(transformMatrix[1].split(', ')[3]);
-                }
-            };
+            e.preventDefault();
+            isDragging = true;
+            isMoving = false;
+            startPosition = e.type.includes('mouse') ? e.pageX : e.originalEvent.touches[0].pageX;
+            stopAutoSlide();
+            $sliderContainer.css('transition', 'none');
 
-            const handleMove = (e) => {
-                if (!isDragging) return;
-                const currentPosition = e.type.includes('mouse') ? e.pageX : e.originalEvent.touches[0].pageX;
-                const dragDistance = currentPosition - startPosition;
-                const newTranslate = currentTranslate + dragDistance;
-                $sliderContainer.css('transform', `translateX(${newTranslate}px)`);
-            };
+            const transformMatrix = $sliderContainer.css('transform').match(/matrix\((.+)\)/);
+            if (transformMatrix && transformMatrix[1]) {
+                currentTranslate = parseFloat(transformMatrix[1].split(', ')[4]); 
+            } else {
+                currentTranslate = 0;
+            }
+        };
 
-            const handleEnd = (e) => {
-             if (!isDragging) return;
+        const handleMove = (e) => {
+            if (!isDragging) return;
+            e.preventDefault(); // 
+            const currentPosition = e.type.includes('mouse') ? e.pageX : e.originalEvent.touches[0].pageX;
+            const dragDistance = currentPosition - startPosition;
+            const newTranslate = currentTranslate + dragDistance;
+            $sliderContainer.css('transform', `translateX(${newTranslate}px)`);
+        };
+
+        const handleEnd = (e) => {
+            if (!isDragging) return;
             isDragging = false;
-
-            const endPosition = e.type.includes('mouse') ? e.pageX : e.originalEvent.changedTouches[0].pageX;
-             const dragDistance = endPosition - startPosition;
-             const slideItemWidth = $sliderContainer.find('li').first().outerWidth(true);
-             const movedSlides = Math.round(dragDistance / slideItemWidth);
-
-             if (Math.abs(dragDistance) > 50) { 
-             currentIndex -= movedSlides;
-             } else {
-             }
-             updateSlider();
-             startAutoSlide();
-             };
-
-            // --- 이벤트 리스너 통합 ---
-            $(window).on('resize', setInitialPosition);
-
-            $sliderContainer.on('transitionend', function() {
-                isMoving = false;
-                if (currentIndex === imageCount + cloneCount) {
-                    $sliderContainer.css('transition', 'none');
-                    currentIndex = cloneCount;
-                    $sliderContainer.css('transform', `translateX(${-currentIndex * $sliderContainer.find('li').first().outerWidth(true)}px)`);
-                } else if (currentIndex === 0) {
-                    $sliderContainer.css('transition', 'none');
-                    currentIndex = imageCount;
-                    $sliderContainer.css('transform', `translateX(${-currentIndex * $sliderContainer.find('li').first().outerWidth(true)}px)`);
-                }
-            });
-
-            $nextBtn.on('click', function() {
-                if (!isMoving) {
-                    currentIndex++;
-                    updateSlider();
-                }
-            });
-
-            $prevBtn.on('click', function() {
-                if (!isMoving) {
-                    currentIndex--;
-                    updateSlider();
-                }
-            });
-
-            $sliderContainer.on('mouseenter', stopAutoSlide).on('mouseleave', startAutoSlide);
-
-            // 마우스 이벤트 연결
-            $sliderContainer.on('mousedown', handleStart);
-            $sliderContainer.on('mousemove', handleMove);
-            $(document).on('mouseup', handleEnd);
             
-            // 터치 이벤트 연결
-            $sliderContainer.on('touchstart', handleStart);
-            $sliderContainer.on('touchmove', handleMove);
-            $(document).on('touchend', handleEnd);
+            const endPosition = e.type.includes('mouseup') ? e.pageX : e.originalEvent.changedTouches[0].pageX;
+            const dragDistance = endPosition - startPosition;
+            
+            if (Math.abs(dragDistance) > 50) { 
+                if (dragDistance < 0) {
+                    currentIndex++;
+                } else {
+                    currentIndex--;
+                }
+            }
+            
+            updateSlider();
+            startAutoSlide();
+        };
 
+        $(window).on('resize', setInitialPosition);
 
-            $pagination.on('click', '.slider-pagination-bullet', function() {
-                if (isMoving) return;
-                stopAutoSlide();
-                const targetIndex = parseInt($(this).attr('data-index'), 10);
-                currentIndex = targetIndex + cloneCount;
+        $sliderContainer.on('transitionend', function() {
+            isMoving = false;
+            if (currentIndex >= imageCount + cloneCount) {
+                $sliderContainer.css('transition', 'none');
+                currentIndex = cloneCount;
+                const slideItemWidth = $sliderContainer.find('li').first().outerWidth(true);
+                $sliderContainer.css('transform', `translateX(${-currentIndex * slideItemWidth}px)`);
+            } else if (currentIndex <= 0) {
+                $sliderContainer.css('transition', 'none');
+                currentIndex = imageCount;
+                const slideItemWidth = $sliderContainer.find('li').first().outerWidth(true);
+                $sliderContainer.css('transform', `translateX(${-currentIndex * slideItemWidth}px)`);
+            }
+        });
+
+        $nextBtn.on('click', function() {
+            if (!isMoving) {
+                currentIndex++;
                 updateSlider();
-                startAutoSlide();
-            });
+            }
+        });
 
-            // --- 초기 실행 ---
-            setInitialPosition();
-            createPagination();
+        $prevBtn.on('click', function() {
+            if (!isMoving) {
+                currentIndex--;
+                updateSlider();
+            }
+        });
+
+        $sliderContainer.on('mouseenter', stopAutoSlide).on('mouseleave', startAutoSlide);
+
+        // 이벤트 리스너 연결
+        $sliderContainer.on('mousedown', handleStart);
+        $sliderContainer.on('mousemove', handleMove);
+        $(document).on('mouseup', handleEnd);
+        
+        $sliderContainer.on('touchstart', handleStart);
+        $sliderContainer.on('touchmove', handleMove);
+        $(document).on('touchend', handleEnd);
+
+        $pagination.on('click', '.slider-pagination-bullet', function() {
+            if (isMoving) return;
+            stopAutoSlide();
+            const targetIndex = parseInt($(this).attr('data-index'), 10);
+            currentIndex = targetIndex + cloneCount;
+            updateSlider();
             startAutoSlide();
         });
+
+        setInitialPosition();
+        createPagination();
+        startAutoSlide();
+    });
 
 //인기 아티클
 
