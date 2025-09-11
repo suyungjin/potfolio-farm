@@ -630,6 +630,7 @@ header .container {
     display: block;
     border-radius: var(--border-radius);
     overflow: hidden;
+    cursor: pointer;
 }
 
 .news-item .news-image img{
@@ -651,12 +652,18 @@ header .container {
     font-weight: bold;
     color: #D400B4;
     align-content: center;
+    cursor: pointer;
 }
 .news-article .news-content{
     height: auto;
     font-size: 20px;
     align-content: center;
     margin-bottom: 21px;
+    cursor: pointer;
+}
+
+.news-article .news-summary{
+    cursor: pointer;
 }
 
 /*아티클 슬라이드*/
