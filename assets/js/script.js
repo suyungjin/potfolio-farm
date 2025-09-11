@@ -234,9 +234,9 @@ const sliderData = {
             const imageMargin = 30;
 
             $sliderContainer.find('li').css('margin-right', `${imageMargin}px`);
-
-            $sliderContainer.find('li').slice(0, cloneCount).clone().addClass('clone').appendTo($sliderContainer);
-            $sliderContainer.find('li').slice(-cloneCount).clone().addClass('clone').prependTo($sliderContainer);
+            const $originalSlides = $sliderContainer.children('li');
+            $originalSlides.last().clone().addClass('clone').prependTo($sliderContainer);
+            $originalSlides.first().clone().addClass('clone').appendTo($sliderContainer);
 
             const totalImageCount = $sliderContainer.find('li').length;
             let currentIndex = cloneCount;
@@ -321,22 +321,22 @@ const sliderData = {
         };
 
         const handleEnd = (e) => {
-            if (!isDragging) return;
-            isDragging = false;
-            
-            const endPosition = e.type.includes('mouseup') ? e.pageX : e.originalEvent.changedTouches[0].pageX;
-            const dragDistance = endPosition - startPosition;
-            
-            if (Math.abs(dragDistance) > 50) { 
-                if (dragDistance < 0) {
-                    currentIndex++;
-                } else {
-                    currentIndex--;
-                }
+        if (!isDragging) return;
+        isDragging = false;
+        
+        const endPosition = e.type.includes('mouseup') ? e.pageX : e.originalEvent.changedTouches[0].pageX;
+        const dragDistance = endPosition - startPosition;
+        
+        if (Math.abs(dragDistance) > 50) { 
+            if (dragDistance < 0) {
+                currentIndex++;
+            } else {
+                currentIndex--;
             }
-            
-            updateSlider();
-            startAutoSlide();
+        }
+        
+        updateSlider();
+        startAutoSlide();
         };
 
         $(window).on('resize', setInitialPosition);
